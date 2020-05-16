@@ -1,0 +1,8 @@
+Run Zookeeper:
+zookeeper-server-start kafka_2.13-2.5.0/config/zookeeper.properties
+
+Run 1 Kafka Broker:
+kafka-server-start kafka_2.13-2.5.0/config/server.properties
+
+Run twitter.py:
+python3 twitter.py
