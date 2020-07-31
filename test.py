@@ -3,18 +3,15 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 import credentials, config
 import json
+from pprint import pprint
 from pykafka import KafkaClient
 
 class MyKafkaStreamListener(StreamListener):
-    def __init__(self, hosts, topic, verbose=False):
-        print('[*] Starting Stream...')
-        self.verbose = verbose
-        self.messages_recived = 0
-        self.messages_sent = 0
-        self.client = KafkaClient(hosts)
-        self.topic = self.client.topics[topic]
+    def __init__(self):
+        self.client = KafkaClient(config.KAFKA_HOST)
+        self.topic = self.client.topics[config.TOPIC]
         self.producer = self.topic.get_sync_producer()
-        print('[*] Stream Ready...')
+        print('[*] Starting Stream...')
 
     def filter_data(self, data):
         json_data = json.loads(data)
@@ -44,13 +41,10 @@ class MyKafkaStreamListener(StreamListener):
         }
 
     def on_data(self, data):
-        self.messages_recived += 1
-        if self.verbose: print(f"Messages Recived: {self.messages_recived}")
+        # pprint(json.loads(data))
         filtered_data = self.filter_data(data)
         message = json.dumps(filtered_data).encode('ascii')
         self.producer.produce(message)
-        self.messages_sent += 1
-        if self.verbose: print(f"Messages Sent: {self.messages_sent}")
         return True
     
     def on_error(self, status_code):
@@ -69,7 +63,7 @@ if __name__ == '__main__':
     auth.set_access_token(credentials.ACCESS_TOKEN, credentials.ACCESS_TOKEN_SECRET)
     # Stream initialization
     try:
-        stream = Stream(auth, MyKafkaStreamListener(hosts=config.KAFKA_HOST, topic=config.TOPIC, verbose=True))
+        stream = Stream(auth, MyKafkaStreamListener(), tweet_mode='extended')
         stream.filter(track=config.TWEETS_TO_TRACK)
     except KeyboardInterrupt:
         print(f"\n[*] Keyboard Interrupt")

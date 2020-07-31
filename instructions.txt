@@ -1,8 +1,16 @@
 Run Zookeeper:
-zookeeper-server-start kafka_2.13-2.5.0/config/zookeeper.properties
+zookeeper-server-start ~/kafka_2.13-2.5.0/config/zookeeper.properties
 
 Run 1 Kafka Broker:
-kafka-server-start kafka_2.13-2.5.0/config/server.properties
+kafka-server-start ~/kafka_2.13-2.5.0/config/server.properties
 
 Run twitter.py:
 python3 twitter.py
+
+
+You can read the stream using:
+ ~/kafka_2.13-2.5.0/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic twitter_tweets_new 
+
+ NOTE: You can add --from-beginning to the command to get all data from start of server.
+
+ 
