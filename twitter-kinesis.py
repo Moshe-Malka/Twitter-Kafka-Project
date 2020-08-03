@@ -6,6 +6,8 @@ from botocore.exceptions import ClientError
 
 session = boto3.session.Session()
 secretsmanager_client = session.client( service_name='secretsmanager', region_name=os.environ['REGION'] )
+# for testing locally:
+# secretsmanager_client = session.client( service_name='secretsmanager', region_name='eu-west-1' )
 
 class MyStreamListener(StreamListener):
     def __init__(self):
@@ -21,7 +23,7 @@ class MyStreamListener(StreamListener):
             response = self.kinesis_client.put_record(
                 StreamName='twitter-stream',
                 Data=json.dumps(data),
-                PartitionKey=data['id_str']
+                PartitionKey=data.get('id_str') if data.get('id_str') else str(data.get('id')) 
             )
         except Exception as e:
             print(e)
