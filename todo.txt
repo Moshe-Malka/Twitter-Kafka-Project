@@ -1,0 +1,12 @@
+# locally:
+docker build -t twitter-kinesis-project .
+docker run twitter-kinesis-project
+
+
+TODO:
+1) upload docker to ecr.
+2) create fargate cluster
+3) update fargate task iam :
+https://docs.aws.amazon.com/AmazonECS/latest/userguide/specifying-sensitive-data-tutorial.html
+4) update cdk stack with ecr referance.
+5) create kinesis data stream 'twitter-stream'
